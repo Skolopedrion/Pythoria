@@ -69,8 +69,3 @@ if __name__ == '__main__':
     for p in points:
         win.putchar('O', x=p[0], y=p[1])
     pygcurse.waitforkeypress()
-            
-            
-    
-    
-    

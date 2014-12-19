@@ -1,33 +1,13 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
 from __future__ import print_function, unicode_literals, division
 import itertools, codecs
-from library import get_line, get_circle
 
-class Tile(object):
-    """
-    The tile contains all the information regarding its visibility, if
-    it blocks line of sight, ...
-    """
-    
-    def __init__(self, value=' ', block_light=False, blocking=False, visible=False):
-        self.value = value
-        self.block_light = block_light
-        self.blocking = blocking
-        self.visible = visible
-    
-    def __eq__(self, other):
-        return self.value == other.value and \
-               self.block_light == other.block_light and \
-               self.blocking == other.blocking and \
-               self.visible == other.visible
-        
-    def __ne__(self, other):
-        return not self == other
-    
-    def __repr__(self):
-        return '<Tile {0}{1}>'.format(self.value, ' visible' if self.visible else '')
-        
+from library import get_line, get_circle
+from maze import Maze
+from tile import Tile
+
+
 class Dungeon(object):
     """
     The Dungeon object contains all the information regarding the dungeon
@@ -35,7 +15,14 @@ class Dungeon(object):
     def __init__(self):
         self.width = self.height = None
         self._map = None
-    
+
+    @classmethod
+    def generate(cls, w, h):
+        new = Dungeon()
+        new._map = Maze(w, h).as_list()
+        new.width, new.height = w, h
+        return new
+
     @classmethod
     def load_from_file(cls, filename):
         """
@@ -43,7 +30,7 @@ class Dungeon(object):
         Format: first line gives number of rows and columns to consider from the
         text file.
         Following lines give a text representation of the dungeon.
-        Wall: #
+        Wall: █
         """
         with codecs.open(filename, 'r', encoding='utf-8') as f:
             size = f.readline()
@@ -56,7 +43,7 @@ class Dungeon(object):
                 row_tiles = []
                 for col_idx, col in enumerate(row):
                     if col == '#':
-                        row_tiles.append(Tile('#', block_light=True, blocking=True))
+                        row_tiles.append(Tile('█', block_light=True, blocking=True))
                     elif col == ' ':
                         row_tiles.append(Tile())
                     else:
@@ -77,20 +64,15 @@ class Dungeon(object):
     def __getitem__(self, key):
         "Access the Tile at position [x, y]"
         x, y = key
-        if not ((0 <= x < self.width) and (0 <= y < self.height)):
-            raise IndexError
         return self._map[y][x]
     
     def collide(self, x, y):
-        "Check if the Tile at position (x, y) is blocking."
-        if self[x, y].blocking:
-            return True
-        return False
+        """Check if the Tile at position (x, y) is blocking."""
+        return bool(self[x, y].blocking)
     
     def reveal(self, x, y, radius):
         """
         Turn on the visibility in a radius around position (x, y)
-        
         """
         fov = self.get_field_of_vision(x, y, radius)
         for tile_x, tile_y in fov:
@@ -128,11 +110,11 @@ class Dungeon(object):
 
         def iter_adjacent_cells(cells):
             "Helper function to iterate over the adjacent cells in the given iterator"
-            for offset_x , offset_y in cells:
-                if offset_x or offset_y: # Skip position (0, 0)
+            for offset_x, offset_y in cells:
+                if offset_x or offset_y:  # Skip position (0, 0)
                     if (x + offset_x - pos_x)**2 + (y + offset_y - pos_y)**2 > (radius+0.5)**2:
                         break
-                    points.add( (x + offset_x, y + offset_y) )
+                    points.add((x + offset_x, y + offset_y))
         
         points = set()
         if x < pos_x:
@@ -165,10 +147,10 @@ class Dungeon(object):
         return points
     
     def _get_bounding_box(self, x, y, radius):
-        "Return the points delimiting the box at center (x, y) with size radius."
+        """Return the points delimiting the box at center (x, y) with size radius."""
         low_x, low_y = self._clamp_in_map(x - radius, y - radius)
         high_x, high_y = self._clamp_in_map(x + radius, y + radius)
-        border = [] # Perimiter of the box
+        border = []  # Perimeter of the box
         for j in range(low_y + 1, high_y):
             border.append((low_x, j))
             border.append((high_x, j))
@@ -178,7 +160,7 @@ class Dungeon(object):
         return border
     
     def _get_bounding_circle(self, x, y, radius):
-        "Return the points delimiting the circle  at center (x, y) with given radius."
+        """Return the points delimiting the circle  at center (x, y) with given radius."""
         points = get_circle(x, y, radius)
         for i, point in enumerate(points):
             x, y = point
@@ -188,17 +170,13 @@ class Dungeon(object):
         return points
     
     def _clamp_in_map(self, x, y):
-        "Returns the position (x, y) bounded by the map geometry"
+        """Returns the position (x, y) bounded by the map geometry"""
         x = min(max(0, x), self.width - 1)
         y = min(max(0, y), self.height - 1)
         return x, y
         
     def reveal_all(self):
-        "Reveal the whole map"
+        """Reveal the whole map"""
         for row in self._map:
             for tile in row:
-                tile.visible=True
-        
-
-
-
+                tile.visible = True
