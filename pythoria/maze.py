@@ -4,6 +4,8 @@ from tile import Tile
 
 N, S, E, W = 0b0001, 0b0010, 0b0100, 0b1000
 
+random.seed(1234)
+
 WALL, EMPTY = Tile('█', True, True, False), Tile(' ', False, False, False)
 
 intersection = {
@@ -143,7 +145,12 @@ class Maze(list):
         for row in self:
             line = []
             for block in row:
-                line.append(Tile(str_cell(block), True, True, False) if block else EMPTY)
+                line.append(
+                    Tile(value=str_cell(block),
+                         block_light=True,
+                         blocking=True,
+                         visible=False) if block else Tile()
+                )
             lst.append(line)
         return lst
 

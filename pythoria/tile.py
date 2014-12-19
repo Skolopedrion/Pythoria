@@ -22,7 +22,7 @@ class Tile(object):
         return not self == other
 
     def __repr__(self):
-        return '<Tile {0}{1}>'.format(self.value, ' visible' if self.visible else '')
+        return '<Tile {0}{1}>'.format(self.value, ' visible' if self.visible else ' not visible')
 
     def __str__(self):
         return self.value

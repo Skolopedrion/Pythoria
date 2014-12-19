@@ -52,17 +52,18 @@ class Dungeon(object):
         return dungeon
     
     def add_player(self, player):
-        "Add the player in the dungeon"
+        """Add the player in the dungeon"""
         self.player = player
         self.reveal(player.x, player.y, 5)
     
     def __iter__(self):
-        "Iterate over the rows of the dungeon"
+        """Iterate over the rows of the dungeon"""
+
         for line in self._map:
             yield line
     
     def __getitem__(self, key):
-        "Access the Tile at position [x, y]"
+        """Access the Tile at position [x, y]"""
         x, y = key
         return self._map[y][x]
     
@@ -77,7 +78,7 @@ class Dungeon(object):
         fov = self.get_field_of_vision(x, y, radius)
         for tile_x, tile_y in fov:
             self[tile_x, tile_y].visible = True
-    
+
     def get_field_of_vision(self, x, y, radius):
         """
         Returns a list of tile coordinates in the field of vision.

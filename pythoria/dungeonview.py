@@ -15,7 +15,7 @@ class DungeonView(object):
         self.win.font = pygame.font.Font('C:\Windows\Fonts\Consola.ttf', 22)
         
     def draw(self):
-        "Draw the dungeon and the player."
+        """Draw the dungeon and the player."""
         
         for line in self.dungeon:
             for tile in line:
