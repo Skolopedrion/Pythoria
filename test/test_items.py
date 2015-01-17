@@ -17,31 +17,31 @@ class TestFood(unittest.TestCase):
         self.assertEqual(fd.calories, 40)
 
 
-class TestWeapon(unittest.TestCase):
+class TestBaseWeapon(unittest.TestCase):
     def test_init(self):
-        wpn = Weapon('arme', dmg_mult=1.4)
+        wpn = BaseWeapon('arme', dmg_mult=1.4)
         self.assertEqual(wpn.name, 'arme')
         self.assertAlmostEqual(wpn.dmg_mult, 1.4)
 
 class TestDistanceWeapon(unittest.TestCase):
     def test_init(self):
-        wpn = DistanceWeapon('bow', dmg_mult=1.2, range=9, quiver='bolt')
+        wpn = DistanceWeapon('bow', dmg_mult=1.2, range_=9, quiver='bolt')
         self.assertEqual(wpn.name, 'bow')
         self.assertAlmostEqual(wpn.dmg_mult, 1.2)
-        self.assertEqual(wpn.range, 9)
+        self.assertEqual(wpn.range_, 9)
         self.assertEqual(wpn.quiver, 'bolt')
 
 
 class TestThrowableWeapon(unittest.TestCase):
     def test_init(self):
-        wpn = ThrowableWeapon('arme de jet', dmg_mult=1.5, range=4)
+        wpn = ThrowableWeapon('arme de jet', dmg_mult=1.5, range_=4)
         self.assertEqual(wpn.name, 'arme de jet')
         self.assertAlmostEqual(wpn.dmg_mult, 1.5)
 
 
 class TestMeleeWeapon(unittest.TestCase):
     def test_init(self):
-        wpn = MeleeWeapon('arme de melee', dmg_mult=1.4)
+        wpn = BaseMeleeWeapon('arme de melee', dmg_mult=1.4)
         self.assertEqual(wpn.name, 'arme de melee')
         self.assertAlmostEqual(wpn.dmg_mult, 1.4)
 

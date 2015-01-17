@@ -12,32 +12,32 @@ class Food(Item):
         self.calories = calories
 
 
-class Weapon:
+class BaseWeapon(Item):
     def __init__(self, name, dmg_mult):
-        self.name = name
+        super().__init__(name)
         self.dmg_mult = dmg_mult
 
 
-class ThrowableWeapon(Weapon):
-    def __init__(self, name, dmg_mult, range):
+class ThrowableWeapon(BaseWeapon):
+    def __init__(self, name, dmg_mult, range_):
         super().__init__(name, dmg_mult)
-        self.range = range
+        self.range_ = range_
 
 
-class DistanceWeapon(Weapon):
-    def __init__(self, name, dmg_mult, range, quiver):
+class DistanceWeapon(BaseWeapon):
+    def __init__(self, name, dmg_mult, range_, quiver):
         super().__init__(name, dmg_mult)
-        self.range = range
+        self.range_ = range_
         self.quiver = quiver
 
 
-class MeleeWeapon(Weapon):
+class BaseMeleeWeapon(BaseWeapon):
     pass
 
 
-class LightMeleeWeapon(MeleeWeapon):
+class LightMeleeWeapon(BaseMeleeWeapon):
     hands = 1
 
 
-class HeavyMeleeWeapon(MeleeWeapon):
+class HeavyMeleeWeapon(BaseMeleeWeapon):
     hands = 2
